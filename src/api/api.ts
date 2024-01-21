@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { IPost } from '../types/IPost.interface';
+import { IUser } from '../types/IUser.interface';
 
 export const api = axios.create({
   baseURL: 'https://jsonplaceholder.typicode.com'
@@ -16,27 +18,30 @@ export const getPostsForUser = (userId: number) => {
   });
 }
 
-export const updateUser = (user: User) => {
+export const updateUser = (user: IUser) => {
   return api.put(`/users/${user.id}`, user); 
 }
 
 export const deletePost = (id: number) => {
   return api.delete(`/posts/${id}`);
-} 
-
-export const getTasks = () => {
-  return api.get('/todos');
 }
 
-// User model
-export interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: {
-    street: string;
-    suite: string 
-    city: string
-  }
+export const updatePost = (post: IPost) => {
+  return api.put(`/posts/${post.id}`, post);
+}
+
+export const getTasks = (start: number, limit: number) => {
+  return api.get('/todos', {
+    params: {
+      _start: start,
+      _limit: limit
+    }
+  }).then(response => ({
+    tasks: response.data,
+    totalCount: parseInt(response.headers['x-total-count'], 10)
+  }));
+};
+
+export const getPosts = (id: string) => {
+  return api.get(`posts?userId=${id}`)
 }

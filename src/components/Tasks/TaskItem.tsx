@@ -1,37 +1,35 @@
-import { 
-    TableRow,
-    TableCell,
-    Checkbox,
-} from '@mui/material';
-import { useState } from 'react';
-
-interface Task {
-    id: string
-    title: string
-    completed: boolean  
-}
+import React, { useCallback } from 'react';
+import { TableRow, TableCell, Checkbox } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { ITask } from '../../types/ITask.interface';
+import { toggleTaskStatus } from '../../store/taskSlice';
 
 interface TaskItemProps {
-  task: Task
+  task: ITask;
 }
 
-function TaskItem({ task }: TaskItemProps) {
-    const [checked, setChecked] = useState(task.completed);
-    const toggleStatus = () => {
-      // toggle API call
-    }
-  
-    return (
-      <TableRow>
-        <TableCell>{task.title}</TableCell>
-        <TableCell>
-          <Checkbox 
-            checked={checked}
-            onChange={toggleStatus} 
-          />
-        </TableCell>
-      </TableRow>
-    )
+const TaskItem = ({ task }: TaskItemProps) => {
+  const dispatch = useDispatch();
+  const [checked, setChecked] = React.useState(task.completed);
+
+  {/* TODO: Make a request to toggle the completion status */}
+  const toggleStatus = useCallback(() => {
+    setChecked(!checked);
+
+    dispatch(toggleTaskStatus(task.id));
+  }, [checked, dispatch, task.id]);
+
+  return (
+    <TableRow>
+      <TableCell>{task.title}</TableCell>
+      <TableCell>
+        <Checkbox
+          checked={checked}
+          onChange={toggleStatus} 
+        />
+      </TableCell>
+    </TableRow>
+  );
 }
 
-export default TaskItem
+export default TaskItem;

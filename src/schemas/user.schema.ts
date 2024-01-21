@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const phoneRegExp = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+const websiteRegExp = /^((https?|ftp):\/\/)?(www.)?([a-zA-Z0-9])+[\.]([a-zA-Z0-9]{2,4})(\/[a-zA-Z0-9#-]+\/?)*$/;
 
 export const validationSchema = yup.object().shape({
     name: yup.string()
@@ -9,13 +9,18 @@ export const validationSchema = yup.object().shape({
         .email('Invalid email')
         .required('Email is required'),
     phone: yup.string()
-        .matches(phoneRegExp, 'Phone number is not valid')
         .required('Phone number is required'),
-    website: yup.string(),
+    website: yup.string()
+        .required('Website is required')
+        .matches(websiteRegExp, 'Website is not valid'),
     address: yup.object()
         .shape({
             street: yup.string().required('Street is required'),
             suite: yup.string().required('Suite is required'),
             city: yup.string().required('City is required'),
+        }),
+    company: yup.object()
+        .shape({
+            name: yup.string().required('Company name is required'),
         })
 });

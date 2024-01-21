@@ -5,30 +5,21 @@ import {
   Route,
 } from "react-router-dom";
 import TaskList from './components/Tasks/TaskList';
-import TaskItem from './components/Tasks/TaskItem';
 import UserList from './components/Users/UserList';
-import UserItem from './components/Users/UserItem';
-import UserDetails from './components/Users/UserDetails';
+import UserPosts from './components/Posts/UserPosts';
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <UserList />
         <Routes>
-          {/* <Route
-            path="/users/:userId" 
-            component={UserDetails}  
-          /> */}
-          <Route 
-            path="/tasks"
-            element={<TaskList />}  
-          />
+          <Route path="/" element={<UserList />} />
+          <Route path="/users/:userId/posts" element={<UserPosts />} />
+          <Route path="/tasks" element={<TaskList />} />
         </Routes>
       </div>
     </Router>
   );
-
 }
 
 export default App;

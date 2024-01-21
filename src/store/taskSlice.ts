@@ -1,15 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getTasks } from '../api/api';
-
-interface Task {
-  id: number;
-  userId: number;
-  title: string;
-  completed: boolean;
-}
+import { ITask } from '../types/ITask.interface';
 
 interface TaskState {
-  tasks: Task[];
+  tasks: ITask[];
   loading: boolean;
   error: string | null;
   filters: {
@@ -17,6 +11,7 @@ interface TaskState {
     title: string;
     userId: number | null;
   };
+  total: number;
 }
 
 const initialState: TaskState = {
@@ -28,13 +23,20 @@ const initialState: TaskState = {
     title: '',
     userId: null,
   },
+  total: 0
 };
 
-export const fetchTasks = createAsyncThunk(
+interface FetchTaskArgs {
+  page: number;
+  limit: number;
+}
+
+export const fetchTasks = createAsyncThunk<{tasks: ITask[], totalCount: number}, FetchTaskArgs>(
   'tasks/fetchTasks',
-  async () => {
-    const response = await getTasks();
-    return response.data as Task[];
+  async ({ page, limit }) => {
+    const start = page * limit;
+
+    return await getTasks(start, limit);
   }
 );
 
@@ -42,16 +44,9 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    setFilter(state, action: PayloadAction<{ key: string, value: string | number | null }>) {
-      const { key, value } = action.payload;
-      if (key in state.filters) {
-        (state.filters as any)[key] = value;
-      }
-    },
-
     toggleTaskStatus(state, action: PayloadAction<number>) {
       const taskId = action.payload;
-      const task = state.tasks.find(task => task.id === taskId);
+      const task = state.tasks.find(task => task.id === taskId as any);
       if (task) {
         task.completed = !task.completed;
       }
@@ -63,15 +58,17 @@ const taskSlice = createSlice({
     });
     builder.addCase(fetchTasks.fulfilled, (state, action) => {
       state.loading = false;
-      state.tasks = action.payload;
+      state.tasks = action.payload.tasks;
+      state.total = action.payload.totalCount;
     });
     builder.addCase(fetchTasks.rejected, (state, action) => {
       state.loading = false;
+      state.total = 0;
       state.error = action.error.message || 'Failed to fetch tasks';
     });
   },
 });
 
-export const { setFilter, toggleTaskStatus } = taskSlice.actions;
+export const { toggleTaskStatus } = taskSlice.actions;
 
 export default taskSlice.reducer;
