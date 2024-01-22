@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { List, ListItem, ListItemButton, ListItemText, Collapse } from '@mui/material';
-import UserEditForm from './UserEditForm';
-import { IUser } from '../../types/IUser.interface';
+import React, { useState } from "react";
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Collapse,
+} from "@mui/material";
+import UserEditForm from "./UserEditForm";
+import { IUser } from "../../types/IUser.interface";
 
 interface IUserItemProps {
   user: IUser;

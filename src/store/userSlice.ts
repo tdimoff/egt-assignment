@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUsers, getUserById, updateUser } from '../api/api';
-import { IUser } from '../types/IUser.interface';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getUsers, getUserById, updateUser } from "../api/api";
+import { IUser } from "../types/IUser.interface";
 
 interface IUserState {
   users: IUser[];
@@ -13,30 +13,35 @@ const initialState: IUserState = {
   users: [],
   selectedUser: null,
   isLoading: false,
-  error: null
+  error: null,
 };
 
+interface IFetchUsersArgs {
+  start: number;
+  limit: number;
+}
+
 export const fetchUsers = createAsyncThunk(
-  'users/fetchUsers',
-  async () => {
-    const response = await getUsers();
+  "users/fetchUsers",
+  async ({ start, limit }: IFetchUsersArgs) => {
+    const response = await getUsers({ start, limit });
 
     return response.data;
   }
 );
 
 export const fetchUserDetails = createAsyncThunk(
-  'users/fetchUserDetails',
+  "users/fetchUserDetails",
   async (userId: string) => {
-    const response = await getUserById(userId as any);
+    const response = await getUserById(userId);
 
     return response.data;
   }
 );
 
 export const updateUserThunk = createAsyncThunk(
-  'users/updateUser',
-  async (user: IUser, userId) => {
+  "users/updateUser",
+  async (user: IUser) => {
     const response = await updateUser(user);
 
     return response.data;
@@ -44,7 +49,7 @@ export const updateUserThunk = createAsyncThunk(
 );
 
 const usersSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -77,8 +82,10 @@ const usersSlice = createSlice({
       .addCase(updateUserThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         const updatedUser = action.payload;
-        const index = state.users.findIndex(user => user.id === updatedUser.id);
-        
+        const index = state.users.findIndex(
+          (user) => user.id === updatedUser.id
+        );
+
         if (index !== -1) {
           state.users[index] = updatedUser;
         }

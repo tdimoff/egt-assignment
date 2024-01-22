@@ -1,8 +1,6 @@
-// postSlice.ts
-
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPosts, updatePost, deletePost } from '../api/api';
-import { IPost } from '../types/IPost.interface';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getPosts, updatePost, deletePost } from "../api/api";
+import { IPost } from "../types/IPost.interface";
 
 interface PostState {
   posts: IPost[];
@@ -13,11 +11,11 @@ interface PostState {
 const initialState: PostState = {
   posts: [],
   loading: false,
-  error: null
+  error: null,
 };
 
 export const fetchPosts = createAsyncThunk(
-  'posts/fetchPosts',
+  "posts/fetchPosts",
   async (userId: string) => {
     const response = await getPosts(userId);
     return response.data as IPost[];
@@ -25,7 +23,7 @@ export const fetchPosts = createAsyncThunk(
 );
 
 export const updatePostThunk = createAsyncThunk(
-  'posts/updatePost',
+  "posts/updatePost",
   async (post: IPost) => {
     const response = await updatePost(post);
     return response.data as IPost;
@@ -33,7 +31,7 @@ export const updatePostThunk = createAsyncThunk(
 );
 
 export const deletePostThunk = createAsyncThunk(
-  'posts/deletePost',
+  "posts/deletePost",
   async (postId: number) => {
     await deletePost(postId);
     return postId;
@@ -41,7 +39,7 @@ export const deletePostThunk = createAsyncThunk(
 );
 
 const postsSlice = createSlice({
-  name: 'posts',
+  name: "posts",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -54,17 +52,18 @@ const postsSlice = createSlice({
     });
     builder.addCase(fetchPosts.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message || 'Failed to fetch posts';
+      state.error = action.error.message || "Failed to fetch posts";
     });
     builder.addCase(updatePostThunk.fulfilled, (state, action) => {
       const updatedPost = action.payload;
-      const index = state.posts.findIndex(post => post.id === updatedPost.id);
+      const index = state.posts.findIndex((post) => post.id === updatedPost.id);
+
       if (index !== -1) {
         state.posts[index] = updatedPost;
       }
     });
     builder.addCase(deletePostThunk.fulfilled, (state, action) => {
-      state.posts = state.posts.filter(post => post.id !== action.payload);
+      state.posts = state.posts.filter((post) => post.id !== action.payload);
     });
   },
 });

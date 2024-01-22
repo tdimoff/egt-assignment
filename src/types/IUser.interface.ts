@@ -4,13 +4,13 @@ interface IAddress {
   city: string;
   zipcode?: string;
 }
-  
+
 interface ICompany {
   name: string;
   catchPhrase?: string;
   bs?: string;
 }
-  
+
 export interface IUser {
   id: number;
   name: string;
@@ -18,5 +18,5 @@ export interface IUser {
   address: IAddress;
   phone: string;
   website: string;
-  company: ICompany; 
+  company: ICompany;
 }

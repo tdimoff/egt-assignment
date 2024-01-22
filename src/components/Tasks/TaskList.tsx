@@ -1,22 +1,22 @@
-import { 
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    TablePagination,
-    Paper,
-    Container
-} from '@mui/material';
-import { useSelector } from 'react-redux';
-import TaskItem from './TaskItem';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchTasks } from '../../store/taskSlice';
-import { AppDispatch } from '../../store';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TablePagination,
+  Paper,
+  Container,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+import TaskItem from "./TaskItem";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchTasks } from "../../store/taskSlice";
+import { AppDispatch } from "../../store";
 import type { RootState } from "../../store";
 
-{/* TODO: Filtering functionality */}
+// TODO: Add functionality for filtering by status, title, user
 export default function TaskList() {
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const totalTasks = useSelector((state: RootState) => state.tasks.total);
@@ -27,13 +27,22 @@ export default function TaskList() {
     paper: {
       overflow: 'hidden',
       margin: 'auto',
-      marginTop: 2
-    }
+      marginTop: 2,
+    },
+    formControl: {
+      margin: 1,
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: 2,
+    },
   };
 
-
   useEffect(() => {
-    dispatch(fetchTasks({ page, limit: rowsPerPage }));
+    dispatch(fetchTasks({
+      page,
+      limit: rowsPerPage,
+    }));
   }, [dispatch, page, rowsPerPage]);
 
   const handleChangePage = (e: MouseEvent, newPage: number) => {
@@ -46,18 +55,17 @@ export default function TaskList() {
   };
 
   return (
-    <>
-      <Container maxWidth="md">
-        <Paper elevation={4} sx={styles.paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
+    <Container maxWidth="md">
+      <Paper elevation={4} sx={styles.paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {tasks.map(task => (
+              {tasks.map((task) => (
                 <TaskItem task={task} key={task.id} />
               ))}
             </TableBody>
@@ -65,13 +73,12 @@ export default function TaskList() {
           <TablePagination
             component="div"
             count={totalTasks}
-            page={page} 
+            page={page}
             onPageChange={handleChangePage as any}
             rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage} 
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
       </Container>
-    </>
   );
 }
