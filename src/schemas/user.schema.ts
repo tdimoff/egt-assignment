@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 const websiteRegExp =
-  /^((https?|ftp):\/\/)?(www.)?([a-zA-Z0-9])+[\.]([a-zA-Z0-9]{2,4})(\/[a-zA-Z0-9#-]+\/?)*$/;
+  /^((https?|ftp):\/\/)?(www.)?([a-zA-Z0-9])+[.]([a-zA-Z0-9]{2,4})(\/[a-zA-Z0-9#-]+\/?)*$/;
 
 export const validationSchema = yup.object().shape({
   name: yup.string().required("Username is required"),
